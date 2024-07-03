@@ -5,6 +5,9 @@ class UsersController < ApplicationController
   end
 
   def show
+    @user = User.find_by(key:  params[:id])
+
+    render json: @user
   end
 
   def create
@@ -12,7 +15,7 @@ class UsersController < ApplicationController
       key: user_params[:key]
     )
     if @user.save
-      render json: @user, status: 200
+      render json: @user, status: 201
     else
       render json: {
         error: "Invalid params",
@@ -22,9 +25,25 @@ class UsersController < ApplicationController
   end
 
   def update
+    @user = User.find_by(id:  params[:id])
+    if @user
+      @user.update(
+        key: params[:key]
+      )
+    render json: @user
+    else
+      render json: @user.errors, status: 400
+    end
   end
 
   def destroy
+    @user = User.find_by(id:  params[:id])
+    if @user
+      @user.destroy()
+    render json: @user
+    else
+      render json: @user.errors, status: 400
+    end
   end
 
   private
