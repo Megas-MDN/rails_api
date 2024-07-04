@@ -1,13 +1,21 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy ]
-
+ 
   # GET /articles or /articles.json
   def index
-    @articles = Article.all
+    if params[:search]
+      @articles_filtred = Article.where('LOWER(title) LIKE \'%\' || LOWER(?) || \'%\' OR LOWER(description) LIKE \'%\' || LOWER(?) || \'%\'', params[:search], params[:search]).all 
+      render json: @articles_filtred
+    else
+      @articles = Article.all
+      render json: @articles
+    end
+
   end
 
   # GET /articles/1 or /articles/1.json
   def show
+    @article = Article.find_by(id: params[:id])
+    render json:  @article
   end
 
   # GET /articles/new
@@ -58,11 +66,6 @@ class ArticlesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_article
-      @article = Article.find(params[:id])
-    end
-
     # Only allow a list of trusted parameters through.
     def article_params
       params.require(:article).permit(:title, :description, :link)
