@@ -141,18 +141,27 @@ const getUser = async (FETCH_URL) => {
   const loadingUser = window.localStorage.getItem('@loadingUser') === 'true' || false;
   if(loadingUser) return;
   try {
-    const response = await axios.get(`${FETCH_URL}/users`);
-
-    window.localStorage.setItem('@result', JSON.stringify(response.data));
+    // const response = await axios.get(`https://megas-l1w6.onrender.com/users`,
+    //   {  headers: {                  
+    //       "Access-Control-Allow-Origin": "*",
+    //       "Access-Control-Allow-Headers": "*", 
+    //       "Content-Type": "application/json;"                   
+    //   } }
+    // );
+const r = await fetch('https://megas-l1w6.onrender.com/users');
+    const response = await r.json();
+    console.log(response)
+    // window.localStorage.setItem('@result', JSON.stringify(response.data));
+    console.log(`GET: Here's the list of todos`, response.data);
 
   } catch (errors) {
     console.error(errors);
   } finally {
-    window.localStorage.setItem('@loadingUser', false);
+    // window.localStorage.setItem('@loadingUser', false);
     // load();
   }
 }
-window.onload = () => load() 
+window.onload = () => getUser() 
 // const getTodoItems = async () => {
 //   try {
 //     const response = await axios.get(`http://localhost:3000/users`);
